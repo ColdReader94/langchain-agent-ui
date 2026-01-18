@@ -1,0 +1,63 @@
+.chat-input {
+    position: absolute;
+    z-index: 2;
+    bottom: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
+    align-self: center;
+    max-width: 50dvw;
+    border-radius: var(--radius-md);
+    box-shadow: var(--bg) 0px -16px 24px 0px;
+    transition: all 0.3s ease-in-out;
+    background: var(--bg);
+}
+
+.chat-input:focus-within {
+    box-shadow: rgba(0, 0, 0, 0.08) 0px -16px 24px 0px;
+}
+
+.chat-input-wrapper {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+    padding: 0.6rem;
+    padding-bottom: 1rem;
+    border: 2px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    transition: border 0.3s ease-in-out;
+}
+
+.chat-input-wrapper:focus-within {
+    border: 2px solid var(--outline-color);
+}
+
+.chat-input textarea {
+    display: flex;
+    flex: 1;
+    min-height: 1lh;
+    max-height: 12lh;
+    resize: none;
+    border: none;
+    resize: none;
+    field-sizing: content;
+    background-color: transparent;
+    color: var(--input-text);
+    scroll-behavior: smooth;
+    outline: none;
+}
+
+.send-msg-btn {
+    max-height: 3rem;
+}
+
+body:has(article) .chat-input {
+    width: 80%;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    bottom: 2rem;
+    transform: none;
+}

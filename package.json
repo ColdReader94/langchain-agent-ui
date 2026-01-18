@@ -1,0 +1,73 @@
+{
+    "name": "agent-chat",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc -b && vite build",
+        "deploy": "gh-pages -d dist",
+        "lint": "eslint .",
+        "preview": "vite preview",
+        "lint:fix": "eslint . --fix",
+        "format:check": "prettier . --check",
+        "format:write": "prettier . --write"
+    },
+    "lint-staged": {
+        "*.{ts,tsx}": [
+            "prettier --write --cache",
+            "eslint --cache --fix ."
+        ],
+        "*.{scss,css,html}": "prettier --write --cache"
+    },
+    "dependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
+        "vite-plugin-css-injected-by-js": "^3.5.2"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.1",
+        "@types/node": "^24.10.1",
+        "@types/react": "^19.2.5",
+        "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "^5.1.1",
+        "eslint": "^9.39.1",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "eslint-plugin-react": "^7.37.3",
+        "eslint-plugin-react-hooks": "^7.0.1",
+        "eslint-plugin-react-refresh": "^0.4.24",
+        "eslint-plugin-unused-imports": "^4.1.4",
+        "gh-pages": "^6.3.0",
+        "globals": "^16.5.0",
+        "prettier": "3.4.2",
+        "typescript": "~5.9.3",
+        "typescript-eslint": "^8.46.4",
+        "vite": "^7.2.4"
+    },
+    "browserslist": {
+        "production": [
+            "last 10 Chrome versions",
+            "last 20 ChromeAndroid versions",
+            "last 5 Safari versions",
+            "last 3 iOS versions",
+            "last 10 Firefox versions",
+            "last 10 FirefoxAndroid versions",
+            "last 5 Edge versions",
+            "Firefox ESR",
+            "not dead",
+            "> 5%"
+        ],
+        "mobile": [
+            "iOS >= 13",
+            "Android >= 10",
+            "ChromeAndroid >= 79",
+            "Chrome >= 79"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}

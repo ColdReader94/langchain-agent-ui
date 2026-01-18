@@ -1,0 +1,99 @@
+.message-item {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 0.5rem;
+    font-size: 0.75rem; /* 12px */
+    text-transform: capitalize;
+    color: var(--muted);
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.chat-list {
+    flex: 1;
+    overflow: auto;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow: hidden;
+}
+
+.chat-msg {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    row-gap: 0.2rem;
+    width: max-content;
+    max-width: 70%;
+    padding: 0.5rem 0.625rem;
+    border-radius: var(--radius-md);
+    background: var(--msg-bg);
+    color: var(--fg);
+}
+
+.chat-msg.error .message-content {
+    color: #b00020;
+    font-style: italic;
+}
+
+.message-content {
+    max-width: 90%;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.chat-msg.own {
+    margin-left: auto;
+    background: var(--own-bg);
+}
+
+.error-input-message {
+    position: absolute;
+    left: 0.6rem;
+    bottom: 0.1rem;
+    margin-top: 0.25rem;
+    font-size: 0.6rem;
+    font-style: italic;
+}
+
+.chat-msg.tool {
+    background: var(--tool-bg);
+    border-left: 4px solid var(--tool-border);
+    font-family: monospace;
+    color: var(--fg);
+}
+
+.tool-call {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.tool-icon {
+    color: var(--tool-icon);
+    font-size: 1.2rem;
+}
+
+.tool-name {
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+}
+
+.tool-params {
+    background: var(--bg);
+    border: 1px solid var(--input-border);
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    max-width: 100%;
+    overflow-x: auto;
+    font-size: 0.8rem;
+}
