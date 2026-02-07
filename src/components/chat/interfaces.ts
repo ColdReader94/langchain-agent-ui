@@ -18,129 +18,84 @@ export interface IChatWindowInput extends Omit<Partial<IMessageInput>, 'onSend' 
     chatName?: string;
     themeSwitcherName?: string;
     showToolsCalls?: boolean;
+    greetingsText?: string;
+    context?: Record<string, unknown> | null;
 }
 
-/**
- * Langchain response interfaces
- */
+export interface IChatTemplate {
+    name: string;
+    title: string;
+    description: string;
+    argumenst: unknown[];
+}
 
-export interface Root<T = unknown> {
+export interface LangchainResponse {
     token: string;
-    metadata: T;
+    metadata: [MessageData, GraphGraphMetadata?];
 }
 
 // --------------------
-// messages
+// Messages
 // --------------------
 
-export interface MessagesMetadata {
+export interface MessageData {
     lc: number;
-    type: string;
+    type: 'constructor';
     id: string[];
-    kwargs: AIMessageChunkKwargs;
-    tags?: string[];
-    langgraph_step?: number;
-    langgraph_node?: string;
-    langgraph_triggers?: string[];
-    langgraph_path?: string[];
-    langgraph_checkpoint_ns?: string;
-    __pregel_task_id?: string;
-    checkpoint_ns?: string;
-    ls_provider?: string;
-    ls_model_name?: string;
-    ls_model_type?: string;
-    ls_temperature?: number;
+    kwargs: MessageKwargs;
 }
 
-export interface AIMessageChunkKwargs {
+export interface MessageKwargs {
     content: string;
-    tool_call_chunks: IToolCallChunk[];
-    additional_kwargs: Record<string, unknown>;
     id: string;
-    response_metadata: ResponseMetadata;
-    tool_calls: IToolCall[];
-    invalid_tool_calls: IToolCall[];
+    tool_calls?: IToolCall[];
+    tool_call_chunks?: IToolCallChunk[];
+    invalid_tool_calls?: unknown[];
+    additional_kwargs: Record<string, unknown>;
+    response_metadata: Record<string, unknown>;
+    status?: 'success' | 'error';
+    tool_call_id?: string;
+    name?: string;
 }
 
-export interface ResponseMetadata {
-    usage: UsageStats;
-    timing: TimingStats;
-}
-
-export interface UsageStats {
-    input_tokens: number;
-    output_tokens: number;
-    total_tokens: number;
-    queue_time?: number;
-    prompt_tokens?: number;
-    prompt_time?: number;
-    completion_tokens?: number;
-    completion_time?: number;
-    completion_tokens_details?: {
-        reasoning_tokens: number;
-    };
-}
-
-export interface TimingStats {
-    completion_time: number;
-    prompt_time: number;
-    queue_time: number;
-    total_time: number;
-}
-
-// --------------------
-// updates
-// --------------------
-
-export interface UpdatesMetadata {
-    model_request: {
-        messages: ModelMessage[];
-    };
-}
-
-export interface ModelMessage {
-    lc: number;
-    type: string;
-    id: string[];
-    kwargs: ModelMessageKwargs;
-}
-
-// TODO
 export interface IToolCall {
     id: string;
-    type: string;
     name: string;
-    args: string;
-    index: number;
+    args: Record<string, unknown>;
+    type: 'tool_call';
 }
 
 export interface IToolCallChunk {
-    id: string;
-    type: string;
-    function: {
-        name: string;
-        arguments: Record<string, unknown> | string;
+    name?: string;
+    args?: string;
+    id?: string;
+    index?: number;
+    type: 'tool_call_chunk';
+}
+
+// --------------------
+// LangGraph
+// --------------------
+
+export interface GraphGraphMetadata {
+    thread_id: string;
+    langgraph_step: number;
+    langgraph_node: string;
+    langgraph_triggers: string[];
+    langgraph_path: string[];
+    checkpoint_ns: string;
+    ls_provider?: string;
+    ls_model_name?: string;
+    tags?: string[];
+    __pregel_task_id?: string;
+}
+
+// --------------------
+// Updates/State
+// --------------------
+
+export interface LanggraphUpdate {
+    [nodeName: string]: {
+        messages: MessageData[];
     };
-}
-
-export interface ModelMessageKwargs {
-    content: string;
-    additional_kwargs: Record<string, unknown>;
-    response_metadata: ModelResponseMetadata;
-    tool_call_chunks: IToolCallChunk[];
-    id: string;
-    tool_calls: IToolCall[];
-    invalid_tool_calls: IToolCall[];
-    name: string;
-}
-
-export interface ModelResponseMetadata {
-    usage: UsageStats;
-    timing: TimingStats;
-    id: string;
-    object: string;
-    created: number;
-    model: string;
-    system_fingerprint: string;
-    service_tier: string;
 }

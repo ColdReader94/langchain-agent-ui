@@ -34,7 +34,7 @@ export const Sidebar = ({ isOpen, setIsOpen, onClose, children, className = '', 
     return createPortal(
         <>
             <aside ref={sidebarRef} className={`agent-side-panel ${position} ${className}`}>
-                <button onClick={onClose} className="cross-btn btn-reset" />
+                <button type="button" onClick={onClose} className="cross-btn btn-reset" />
                 <div className="agent-side-panel__container">{children}</div>
             </aside>
             <div onClick={() => setIsOpen(false)} className="overlay"></div>

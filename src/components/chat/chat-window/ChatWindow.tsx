@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { createConnection } from '../../../services/connection';
+import { Activity, useCallback, useEffect, useRef, useState } from 'react';
+import { WebSocketConnection } from '../../../services/connection';
 import type { IConnection, TMessage } from '../../../services/connection.interface';
 import { Sidebar } from '../../sidebar/sidebar';
 import { ChatList } from '../chat-list/ChatList';
-import type { IChatWindowInput, IToolCall, ModelMessage } from '../interfaces';
+import type { IChatTemplate, IChatWindowInput, IToolCall, MessageData } from '../interfaces';
 import { MessageInput } from '../message-input/MessageInput';
 import { ThemeProvider, useTheme } from '../providers/ThemeProvider';
+import { TemplatesPanel } from '../templates/templatesPanel';
 import './ChatWindow.css';
 
 export const ChatWindow = ({
@@ -20,14 +21,19 @@ export const ChatWindow = ({
     maxLengthErrorText,
     themeSwitcherName,
     showToolsCalls,
+    greetingsText,
+    context,
 }: Required<IChatWindowInput>) => {
     const [messages, setMessages] = useState<TMessage[]>([]);
+    const [templates, setTemplates] = useState<IChatTemplate[]>([]);
     const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
     const [isSettingsAreOpen, setIsSettingsAreOpen] = useState<boolean>(false);
-    const connRef = useRef<IConnection>(createConnection(url));
+    const connRef = useRef<IConnection>(new WebSocketConnection(url));
     const listRef = useRef<HTMLDivElement | null>(null);
     const [isStreaming, setIsStreaming] = useState<boolean>(false);
     const { toggle, theme } = useTheme();
+
+    const rootClass = messages.length ? 'agent-chat-root has-messages' : 'agent-chat-root';
 
     const scrollToBottom = useCallback(() => {
         if (listRef.current) {
@@ -36,7 +42,7 @@ export const ChatWindow = ({
     }, []);
 
     const send = useCallback(
-        (text: string) => {
+        (text: string, type?: string) => {
             const msg: TMessage = {
                 id: String(Date.now()) + Math.random(),
                 author: ownId,
@@ -46,6 +52,10 @@ export const ChatWindow = ({
             };
 
             try {
+                if (type === 'prompt') {
+                    connRef.current?.send(text, type);
+                    return;
+                }
                 connRef.current?.send(text);
                 setMessages((p) => [...p, msg].slice(-500));
                 setIsStreaming(true);
@@ -55,7 +65,7 @@ export const ChatWindow = ({
                     author: 'error',
                     text: `Error while sending: ${(err as Error).message}`,
                     timestamp: Date.now(),
-                    type: 'error',
+                    type: 'system',
                 };
                 setMessages((p) => [...p, errorMsg].slice(-500));
             }
@@ -63,21 +73,13 @@ export const ChatWindow = ({
         [ownId],
     );
 
-    const cancel = useCallback(() => {
-        const msg: TMessage = {
-            id: String(Date.now()) + Math.random(),
-            author: ownId,
-            text: '',
-            timestamp: Date.now(),
-            type: 'stop',
-        };
-
+    function cancel() {
         try {
-            connRef.current?.send('', msg.type);
+            connRef.current?.send('', 'stop');
         } catch (e) {
             console.error(e);
         }
-    }, [ownId]);
+    }
 
     useEffect(() => {
         const el = listRef.current;
@@ -93,6 +95,7 @@ export const ChatWindow = ({
     }, []);
 
     useEffect(() => {
+        const connectionRef = connRef?.current;
         connRef.current.onOpen(() => {});
 
         connRef.current.onMessage((raw: unknown) => {
@@ -105,15 +108,20 @@ export const ChatWindow = ({
                         author: 'system',
                         text: data.error,
                         timestamp: Date.now(),
-                        type: 'error',
+                        type: 'system',
                     };
                     setMessages((prev) => [...prev, errorMsg].slice(-500));
                     setIsStreaming(false);
                     return;
                 }
 
+                if (data.prompts) {
+                    setTemplates(data.prompts);
+                    connRef.current?.send(context, 'context');
+                }
+
                 if (data.metadata?.model_request?.messages) {
-                    data.metadata.model_request.messages.forEach((msg: ModelMessage) => {
+                    data.metadata.model_request.messages.forEach((msg: MessageData) => {
                         if (msg.kwargs?.tool_calls?.length) {
                             msg.kwargs.tool_calls.forEach((tool: IToolCall) => {
                                 const toolMsg: TMessage = {
@@ -131,13 +139,53 @@ export const ChatWindow = ({
                     });
                 }
 
+                if (data.metadata && Array.isArray(data.metadata)) {
+                    const chunk = data.metadata[0];
+                    const content = chunk?.kwargs?.content;
+
+                    if (chunk.id?.[2] === 'ToolMessage') {
+                        const toolName = chunk.kwargs?.name;
+                        const toolContent = chunk.kwargs?.content;
+                        const toolMsg: TMessage = {
+                            id: String(Date.now()) + Math.random(),
+                            author: 'Tool call',
+                            type: 'tool',
+                            toolName,
+                            text: toolContent,
+                            timestamp: Date.now(),
+                        };
+                        setMessages((prev) => [...prev, toolMsg].slice(-500));
+                        return;
+                    }
+
+                    if (typeof content === 'string' && content.length > 0) {
+                        setMessages((prev) => {
+                            const last = prev[prev.length - 1];
+                            if (last && last.type === 'ai' && !last.done) {
+                                return [...prev.slice(0, -1), { ...last, text: last.text + content }];
+                            }
+                            return [
+                                ...prev,
+                                {
+                                    id: String(Date.now()) + Math.random(),
+                                    author: 'ai',
+                                    text: content,
+                                    timestamp: Date.now(),
+                                    type: 'ai',
+                                    done: false,
+                                },
+                            ];
+                        });
+                    }
+                }
+
                 if (data.metadata?.model_request?.messages?.length) {
                     setMessages((prev) => {
                         const last = prev[prev.length - 1];
 
                         if (last && last.type === 'ai' && !last.done) {
                             const appendedText = data.metadata.model_request.messages
-                                .map((msg: ModelMessage) => msg.kwargs.content)
+                                .map((msg: MessageData) => msg.kwargs.content)
                                 .join('')
                                 .trim();
 
@@ -151,7 +199,7 @@ export const ChatWindow = ({
                                 id: String(Date.now()) + Math.random(),
                                 author: 'ai',
                                 text: data.metadata.model_request.messages
-                                    .map((msg: ModelMessage) => msg.kwargs.content)
+                                    .map((msg: MessageData) => msg.kwargs.content)
                                     .join('')
                                     .trim(),
                                 timestamp: Date.now(),
@@ -161,6 +209,10 @@ export const ChatWindow = ({
                             return [...prev, newMsg].slice(-500);
                         }
                     });
+                }
+
+                if (data?.messages?.[0]?.content?.text) {
+                    send(data.messages[0].content.text);
                 }
 
                 if (data.done) {
@@ -185,22 +237,23 @@ export const ChatWindow = ({
                 author: 'system',
                 text: `Connection error: ${(e as Error)?.message ?? 'Unknown error'}`,
                 timestamp: Date.now(),
-                type: 'error',
+                type: 'system',
             };
             setMessages((prev) => [...prev, errorMsg].slice(-500));
         });
 
         connRef.current.connect();
-        return () => connRef?.current?.close();
-    }, []);
+        return () => connectionRef?.close();
+    }, [context, send]);
 
     return (
-        <section className="agent-chat-root" aria-labelledby="chatHeaderText">
+        <section className={'agent-chat-root ' + rootClass} aria-labelledby="chatHeaderText">
             <header className="chat-header">
                 <div id="chatHeaderText" className="chat-header-name">
                     {chatName}
                 </div>
                 <button
+                    type="button"
                     id="sidebarSettingsBtn"
                     aria-controls="settingsSidebarContent"
                     className="open-sidebar-btn"
@@ -239,16 +292,21 @@ export const ChatWindow = ({
                     </Sidebar>
                 )}
             </header>
+
+            <Activity mode={!messages.length && greetingsText ? 'visible' : 'hidden'}>
+                <div className="greetings">{greetingsText}</div>
+            </Activity>
             <div className="messages-list" ref={listRef}>
                 <ChatList messages={messages} ownId={ownId} showToolsCalls={showToolsCalls} />
             </div>
-
             {showScrollButton && (
-                <button onClick={scrollToBottom} className={'scroll-button visible'} aria-label="Scroll chat to bottom">
+                <button type="button" onClick={scrollToBottom} className={'scroll-button visible'} aria-label="Scroll chat to bottom">
                     &#8681;
                 </button>
             )}
-
+            <Activity mode={!messages.length && templates?.length ? 'visible' : 'hidden'}>
+                <TemplatesPanel templates={templates} onSelect={(tpl) => send(tpl.name, 'prompt')} />
+            </Activity>
             <MessageInput
                 onSend={send}
                 minLength={minLength}

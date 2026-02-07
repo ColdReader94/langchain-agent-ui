@@ -16,9 +16,13 @@ function App({ config }: { config: IChatWindowInput }) {
         ownId = 'me',
         themeSwitcherName = 'Light theme:',
         showToolsCalls = false,
+        greetingsText = '',
+        context = null,
     } = config;
     return (
         <ChatWindowWithProvider
+            greetingsText={greetingsText}
+            context={context}
             showToolsCalls={showToolsCalls}
             url={url}
             disabled={disabled}

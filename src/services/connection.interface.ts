@@ -1,4 +1,5 @@
-export type TMessageOwner = 'human' | 'ai' | 'tool' | 'error' | 'stop';
+export type TMessageOwner = 'human' | 'ai' | 'tool' | 'system';
+export type TMessageType = 'message' | 'prompt' | 'stop' | 'error' | 'done' | 'token' | 'context' | 'ping';
 
 export type TMessage = {
     id: string;
@@ -13,7 +14,7 @@ export type TMessage = {
 
 export interface IConnection {
     connect(): void;
-    send(text: string, type?: string): void;
+    send(text: unknown, type?: TMessageType): void;
     close(): void;
     onMessage(cb: (msg: TMessage) => void): void;
     onOpen(cb: () => void): void;
@@ -26,4 +27,4 @@ export type THandlers = {
     error?: (e: Event | Error) => void;
 };
 
-export type TConnectionType = 'ws' | 'rest';
+export type TConnectionType = 'ws';

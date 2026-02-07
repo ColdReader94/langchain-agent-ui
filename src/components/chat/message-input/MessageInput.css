@@ -16,7 +16,7 @@
 }
 
 .chat-input:focus-within {
-    box-shadow: rgba(0, 0, 0, 0.08) 0px -16px 24px 0px;
+    box-shadow: rgba(0, 0, 0, 0.08) -4px 8px 24px;
 }
 
 .chat-input-wrapper {
@@ -51,7 +51,9 @@
     outline: none;
 }
 
-.send-msg-btn {
+.send-msg-btn,
+.cancel-msg-btn {
+    min-width: 3rem;
     max-height: 3rem;
 }
 

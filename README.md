@@ -4,7 +4,7 @@ A dynamic lightweight **UI chat app** built with **React + TypeScript + Vite**.
 It can be mounted/unmounted inside any JavaScript project, integrated into **any framework** (React, Vue, Angular, Svelte, etc.), used with **vanilla JS**, or run as a **standalone application**.  
 
 The component communicates via **WebSocket connection** to a backend server and is designed to work exclusively with the **response format of a LangChain agent**.  
-It also supports **tool call tracking**, **accessibility features (ARIA, focus management, semantic roles)**, and **theming** for flexible UI customization.  
+It also supports **tool call tracking**, **accessibility features (ARIA, focus management, semantic roles)**, **predefined prompt templates carousel** (from MCP) and **theming** for flexible UI customization.  
 
 You can use it during the **development of your own agents** to simplify testing, or as a **lightweight ready-made chat solution** for connecting to an existing agent.
 
@@ -68,6 +68,7 @@ You can mount/unmount the chat window anywhere:
       minLength: 5,
       maxLength: 5000,
       themeSwitcherName: 'Dark theme:',
+      context: 'Some context data',
     });
 
 ### Unmounting
@@ -79,19 +80,21 @@ You can mount/unmount the chat window anywhere:
 
 ## ⚙️ Configuration Options
 
-| Parameter            | Type      | Default Value                  | Description                                                                 |
-|----------------------|-----------|--------------------------------|-----------------------------------------------------------------------------|
-| `url`                | `string`  | `wss://localhost:8080`         | WebSocket server URL                                                        |
-| `showToolsCalls`     | `boolean` | `false`                        | Show tool calls in the chat                                                 |
-| `disabled`           | `boolean` | `false`                        | Disable input and sending                                                   |
-| `sendButtonText`     | `string`  | `"Send"`                       | Text for the send button                                                    |
-| `maxLength`          | `number`  | `10000`                        | Maximum allowed message length                                              |
-| `minLength`          | `number`  | `3`                            | Minimum required message length                                             |
-| `minLengthErrorText` | `string`  | `"Min characters allowed: 3"`  | Error message when below minimum length                                     |
-| `maxLengthErrorText` | `string`  | `"Max characters allowed: 10000"` | Error message when exceeding maximum length                              |
-| `chatName`           | `string`  | `""`                           | Optional chat name/title                                                    |
-| `ownId`              | `string`  | `"me"`                         | Identifier for the current user                                             |
-| `themeSwitcherName`  | `string`  | `"Light theme:"`               | Label for theme switcher                                                    |
+| Parameter            | Type      | Default Value                      | Description                                                                 |
+|----------------------|-----------|------------------------------------|-----------------------------------------------------------------------------|
+| `url`                | `string`  | `wss://localhost:8080`             | WebSocket server URL                                                        |
+| `showToolsCalls`     | `boolean` | `false`                            | Show tool calls in the chat                                                 |
+| `disabled`           | `boolean` | `false`                            | Disable input and sending                                                   |
+| `sendButtonText`     | `string`  | `"Send"`                           | Text for the send button                                                    |
+| `maxLength`          | `number`  | `10000`                            | Maximum allowed message length                                              |
+| `minLength`          | `number`  | `3`                                | Minimum required message length                                             |
+| `minLengthErrorText` | `string`  | `"Min characters allowed: 3"`      | Error message when below minimum length                                     |
+| `maxLengthErrorText` | `string`  | `"Max characters allowed: 10000"`  | Error message when exceeding maximum length                                 |
+| `chatName`           | `string`  | `""`                               | Optional chat name/title                                                    |
+| `ownId`              | `string`  | `"me"`                             | Identifier for the current user                                             |
+| `themeSwitcherName`  | `string`  | `"Light theme:"`                   | Label for theme switcher                                                    |
+| `greetingsText`      | `string`  | `""`                               | Default static message or greetings                                         |      
+| `context`            | `string`  | `""`                               | Static context                                                              |      
 
 ---
 

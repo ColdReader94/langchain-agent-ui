@@ -90,12 +90,26 @@
 .messages-list {
     flex: 1;
     padding-bottom: 1rem;
-    max-height: calc(100dvh - 156px);
-    min-height: calc(100dvh - 156px);
+    max-height: calc(100dvh - 150px);
+    /* min-height: calc(100dvh - 156px); */
     background-color: var(--bg);
     overflow: auto;
     scroll-behavior: smooth;
     scrollbar-gutter: stable;
     scrollbar-width: thin;
     scrollbar-color: var(--switch-bg) var(--bg);
+}
+
+.greetings {
+    min-width: 80%;
+    max-width: 80%;
+    padding: 1rem 1.25rem;
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-md);
+    margin: 2rem auto;
+    font-size: 1.05rem;
+    line-height: 1.4;
+    background: var(--msg-bg);
+    color: var(--fg);
+    animation: fadeIn 0.3s ease;
 }

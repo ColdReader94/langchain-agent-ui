@@ -7,7 +7,7 @@ export const ChatList = ({ messages, ownId, showToolsCalls }: Props) => (
         {messages.map((m: TMessage) => (
             <article
                 key={m.id}
-                className={`chat-msg ${m.author === ownId ? 'own' : ''} ${m.type === 'error' ? 'error' : ''} ${m.type === 'tool' ? 'tool' : ''}`}
+                className={`chat-msg ${m.author === ownId ? 'own' : ''} ${m.type === 'system' ? 'system' : ''} ${m.type === 'tool' ? 'tool' : ''}`}
             >
                 {m.type === 'tool' && showToolsCalls ? (
                     <div className="message-content tool-call">
@@ -19,10 +19,8 @@ export const ChatList = ({ messages, ownId, showToolsCalls }: Props) => (
                             {m.toolParams && <pre className="tool-params">{JSON.stringify(m.toolParams, null, 2)}</pre>}
                         </div>
                     </div>
-                ) : (
-                    <div className="message-content">{m.text}</div>
-                )}
-
+                ) : null}
+                {m.type !== 'tool' ? <div className="message-content">{m.text}</div> : null}
                 <address className="message-item">
                     <time itemProp="published" dateTime={new Date(m.timestamp).toISOString()}>
                         {new Date(m.timestamp).toLocaleTimeString()}
