@@ -1,3 +1,4 @@
+import Markdown from 'markdown-parser-react';
 import { Activity, useCallback, useEffect, useRef, useState } from 'react';
 import { WebSocketConnection } from '../../../services/connection';
 import type { IConnection, TMessage } from '../../../services/connection.interface';
@@ -31,6 +32,7 @@ export const ChatWindow = ({
     const connRef = useRef<IConnection>(new WebSocketConnection(url));
     const listRef = useRef<HTMLDivElement | null>(null);
     const [isStreaming, setIsStreaming] = useState<boolean>(false);
+    const [aiGreetings, setAiGreetings] = useState<string | null>(null);
     const { toggle, theme } = useTheme();
 
     const rootClass = messages.length ? 'agent-chat-root has-messages' : 'agent-chat-root';
@@ -101,6 +103,11 @@ export const ChatWindow = ({
         connRef.current.onMessage((raw: unknown) => {
             try {
                 const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+
+                if (data.greetings) {
+                    setAiGreetings(data.greetings);
+                    return;
+                }
 
                 if (data.error) {
                     const errorMsg: TMessage = {
@@ -295,6 +302,17 @@ export const ChatWindow = ({
 
             <Activity mode={!messages.length && greetingsText ? 'visible' : 'hidden'}>
                 <div className="greetings">{greetingsText}</div>
+            </Activity>
+            <Activity mode={!messages.length && aiGreetings ? 'visible' : 'hidden'}>
+                <div className="greetings">
+                    <Markdown
+                        content={aiGreetings ?? ''}
+                        options={{
+                            linkTarget: '_blank',
+                            sanitizeHtml: true,
+                        }}
+                    />
+                </div>
             </Activity>
             <div className="messages-list" ref={listRef}>
                 <ChatList messages={messages} ownId={ownId} showToolsCalls={showToolsCalls} />

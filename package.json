@@ -21,6 +21,7 @@
         "*.{scss,css,html}": "prettier --write --cache"
     },
     "dependencies": {
+        "markdown-parser-react": "^2.0.2",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
         "vite-plugin-css-injected-by-js": "^3.5.2"

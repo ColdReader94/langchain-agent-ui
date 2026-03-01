@@ -32,7 +32,6 @@ if (import.meta.env.DEV) {
     const container = document.getElementById('agent-chat-standalone');
     if (container) {
         mountAgentUiApp(container, {
-            greetingsText: 'Hi',
             showToolsCalls: true,
             url: 'wss://localhost:3002',
         });

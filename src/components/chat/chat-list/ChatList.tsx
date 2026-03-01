@@ -1,3 +1,4 @@
+import Markdown from 'markdown-parser-react';
 import type { TMessage } from '../../../services/connection.interface';
 import './ChatList.css';
 
@@ -20,7 +21,17 @@ export const ChatList = ({ messages, ownId, showToolsCalls }: Props) => (
                         </div>
                     </div>
                 ) : null}
-                {m.type !== 'tool' ? <div className="message-content">{m.text}</div> : null}
+                {m.type !== 'tool' ? (
+                    <div className="message-content">
+                        <Markdown
+                            content={m.text}
+                            options={{
+                                linkTarget: '_blank',
+                                sanitizeHtml: true,
+                            }}
+                        />
+                    </div>
+                ) : null}
                 <address className="message-item">
                     <time itemProp="published" dateTime={new Date(m.timestamp).toISOString()}>
                         {new Date(m.timestamp).toLocaleTimeString()}
