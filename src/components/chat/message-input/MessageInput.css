@@ -1,8 +1,4 @@
 .chat-input {
-    position: absolute;
-    z-index: 2;
-    bottom: 35%;
-    transform: translateY(-50%);
     display: flex;
     gap: 0.5rem;
     padding: 0.5rem;

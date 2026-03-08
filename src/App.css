@@ -226,6 +226,12 @@ body.agent-chat {
 }
 
 @media (max-width: 940px) {
+    :root {
+        --font-extra-large: 1.25rem;
+        --font-large: 1rem;
+        --font-base: 0.825rem;
+    }
+
     .agent-chat-root {
         max-width: 100dvw;
     }

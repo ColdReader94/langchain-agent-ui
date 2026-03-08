@@ -3,7 +3,7 @@
     display: inline-block;
     width: 3.2rem;
     height: 1.6rem;
-    font-size: 1rem;
+    font-size: var(--font-base);
 }
 
 .theme-switcher-wrapper {
@@ -67,7 +67,7 @@
     left: 50%;
     width: 3rem;
     height: 3rem;
-    font-size: 1rem;
+    font-size: var(--font-base);
     border-radius: 50% !important;
     opacity: 0.8;
     transition: all 0.3s ease-in-out;
@@ -107,7 +107,7 @@
     border-left: 4px solid var(--accent);
     border-radius: var(--radius-md);
     margin: 2rem auto;
-    font-size: 1.05rem;
+    font-size: var(--font-base);
     line-height: 1.4;
     background: var(--msg-bg);
     color: var(--fg);

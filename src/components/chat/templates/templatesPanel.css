@@ -28,7 +28,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: var(--font-base);
     cursor: pointer;
     transition: all 0.2s ease;
     user-select: none;
@@ -48,7 +48,7 @@
     gap: 0.4rem;
     min-height: 4rem;
     padding: 0.4rem 0.75rem;
-    font-size: 0.875rem;
+    font-size: var(--font-small);
     scroll-snap-align: start;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -59,7 +59,7 @@
 }
 
 .template-chip-icon {
-    font-size: 1rem;
+    font-size: var(--font-base);
     opacity: 0.9;
 }
 
