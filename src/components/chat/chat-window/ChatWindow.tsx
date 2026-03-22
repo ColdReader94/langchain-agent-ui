@@ -215,7 +215,6 @@ export const ChatWindow = ({
                             };
                             return [...prev, newMsg].slice(-500);
                         }
-                        console.log();
                     });
                 }
 
