@@ -97,7 +97,6 @@ body.agent-chat {
     max-width: 50dvw;
     margin: 0 auto;
     padding: 0;
-    height: calc(100dvh - 110px);
     font-size: var(--font-base);
     background: var(--bg);
     color: var(--fg);
@@ -109,7 +108,6 @@ body.agent-chat {
         Roboto,
         'Helvetica Neue',
         Arial;
-    max-height: calc(100% - 100px);
 }
 
 .agent-chat-root,

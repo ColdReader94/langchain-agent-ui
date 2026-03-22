@@ -59,7 +59,7 @@ export class WebSocketConnection implements IConnection {
     private scheduleReconnect() {
         if (this.reconnectTimer) return;
 
-        this.reconnectTimer = window.setTimeout(() => {
+        this.reconnectTimer = setTimeout(() => {
             this.reconnectTimer = null;
             this._connect();
         }, this.reconnectDelay);

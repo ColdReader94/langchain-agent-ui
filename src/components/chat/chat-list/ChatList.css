@@ -98,6 +98,10 @@
     font-size: var(--font-small);
 }
 
+p {
+    margin: 0.25rem;
+}
+
 
 table {
     margin: 0.5rem 0;

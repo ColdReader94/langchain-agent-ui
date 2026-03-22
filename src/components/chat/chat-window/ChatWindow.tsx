@@ -84,6 +84,10 @@ export const ChatWindow = ({
     }
 
     useEffect(() => {
+        console.log(messages);
+    }, [messages]);
+
+    useEffect(() => {
         const el = listRef.current;
         if (!el) return;
 
@@ -193,8 +197,7 @@ export const ChatWindow = ({
                         if (last && last.type === 'ai' && !last.done) {
                             const appendedText = data.metadata.model_request.messages
                                 .map((msg: MessageData) => msg.kwargs.content)
-                                .join('')
-                                .trim();
+                                .join('');
 
                             const updated: TMessage = {
                                 ...last,
@@ -205,16 +208,14 @@ export const ChatWindow = ({
                             const newMsg: TMessage = {
                                 id: String(Date.now()) + Math.random(),
                                 author: 'ai',
-                                text: data.metadata.model_request.messages
-                                    .map((msg: MessageData) => msg.kwargs.content)
-                                    .join('')
-                                    .trim(),
+                                text: data.metadata.model_request.messages.map((msg: MessageData) => msg.kwargs.content).join(''),
                                 timestamp: Date.now(),
                                 type: 'ai',
                                 done: false,
                             };
                             return [...prev, newMsg].slice(-500);
                         }
+                        console.log();
                     });
                 }
 

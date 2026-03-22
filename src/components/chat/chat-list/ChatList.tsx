@@ -24,7 +24,7 @@ export const ChatList = ({ messages, ownId, showToolsCalls }: Props) => (
                 {m.type !== 'tool' ? (
                     <div className="message-content">
                         <Markdown
-                            content={m.text}
+                            content={m.text.replaceAll('\n-', '\n')}
                             options={{
                                 linkTarget: '_blank',
                                 sanitizeHtml: true,
